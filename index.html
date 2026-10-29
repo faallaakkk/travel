@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f7f2">
+  <meta name="description" content="Find your next meaningful trip, meet fellow solo travelers, and book local guides with Elsewhere.">
+  <title>Elsewhere — go a little further</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1d3028;
+      --muted: #718078;
+      --paper: #f8f7f2;
+      --white: #fffefa;
+      --green: #214638;
+      --green-light: #e8eee8;
+      --lime: #d5ef75;
+      --line: #e8e7df;
+      --serif: "Playfair Display", Georgia, serif;
+      --sans: "DM Sans", sans-serif;
+      --shadow: 0 16px 48px rgba(30, 48, 39, .09);
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1200px, calc(100% - 64px)); margin: 0 auto; }
+
+    .topbar { position: sticky; top: 0; z-index: 20; background: rgba(248,247,242,.94); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(29,48,40,.07); }
+    .nav { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 700; letter-spacing: -.8px; }
+    .brand-mark { width: 31px; height: 31px; display: grid; place-items: center; color: var(--green); }
+    .brand-mark svg { width: 29px; height: 29px; }
+    .nav-links { display: flex; align-items: center; gap: 35px; margin-left: auto; margin-right: 12px; }
+    .nav-links a { color: #536159; font-size: 13px; font-weight: 600; transition: color .2s; }
+    .nav-links a:hover { color: var(--green); }
+    .nav-actions { display: flex; align-items: center; gap: 19px; }
+    .login { color: var(--ink); font-size: 13px; font-weight: 600; }
+    .button { min-height: 43px; padding: 0 19px; border: 0; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-size: 12px; font-weight: 700; transition: transform .2s, background .2s, box-shadow .2s; }
+    .button:hover { transform: translateY(-2px); }
+    .button-dark { color: #fff; background: var(--green); }
+    .button-dark:hover { background: #315b48; box-shadow: 0 8px 18px rgba(33,70,56,.18); }
+    .button-light { color: var(--green); background: var(--white); border: 1px solid var(--line); }
+    .button-lime { background: var(--lime); color: var(--ink); }
+    .button svg { width: 15px; height: 15px; }
+    .mobile-toggle { display: none; border: 0; background: none; color: var(--ink); }
+
+    .hero { padding: 31px 0 57px; }
+    .hero-frame { min-height: 508px; position: relative; overflow: hidden; border-radius: 17px; background: #506b60 url("https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=2200&q=88") center 52% / cover no-repeat; }
+    .hero-frame::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,39,32,.68) 0%, rgba(20,39,32,.37) 43%, rgba(20,39,32,.04) 100%), linear-gradient(0deg, rgba(20,39,32,.18), transparent 44%); }
+    .hero-content { position: relative; z-index: 1; width: min(620px, 72%); padding: 72px 0 127px 72px; color: #fff; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1.8px; font-size: 10px; font-weight: 700; }
+    .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
+    .hero h1 { margin: 21px 0 16px; max-width: 550px; font: 500 clamp(43px, 5.2vw, 68px)/1.07 var(--serif); letter-spacing: -1.6px; }
+    .hero h1 em { color: var(--lime); font-weight: 500; }
+    .hero-copy { max-width: 400px; margin: 0; color: rgba(255,255,255,.86); font-size: 14px; line-height: 1.8; }
+    .hero-cta { margin-top: 27px; }
+    .hero-note { position: absolute; z-index: 1; right: 27px; bottom: 26px; display: flex; align-items: center; gap: 10px; padding: 9px 14px 9px 9px; color: #fff; background: rgba(22,42,34,.43); border: 1px solid rgba(255,255,255,.34); border-radius: 999px; backdrop-filter: blur(9px); font-size: 10px; }
+    .avatar-stack { display: flex; padding-left: 5px; }
+    .avatar-stack img { width: 25px; height: 25px; margin-left: -5px; object-fit: cover; border: 2px solid rgba(22,42,34,.45); border-radius: 50%; }
+
+    .search-panel { position: relative; z-index: 2; display: grid; grid-template-columns: 1.35fr 1fr 1fr auto; align-items: center; gap: 0; width: min(980px, calc(100% - 70px)); margin: -49px auto 0; padding: 12px; background: var(--white); border: 1px solid rgba(29,48,40,.06); border-radius: 13px; box-shadow: var(--shadow); }
+    .search-field { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 9px 19px; border-right: 1px solid var(--line); }
+    .search-field:nth-child(3) { border-right: 0; }
+    .field-icon { color: #78877e; flex: none; }
+    .field-icon svg { width: 18px; height: 18px; }
+    .field-label { display: block; margin-bottom: 5px; color: #8a938c; text-transform: uppercase; letter-spacing: 1px; font-size: 9px; font-weight: 700; }
+    .search-field input, .search-field select { width: 100%; padding: 0; color: var(--ink); background: transparent; border: 0; outline: 0; font-size: 12px; font-weight: 600; }
+    .search-field input::placeholder { color: #87918a; }
+    .search-field select { appearance: none; cursor: pointer; }
+    .search-submit { min-height: 47px; padding: 0 23px; white-space: nowrap; }
+
+    section { scroll-margin-top: 95px; }
+    .section { padding: 54px 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 25px; }
+    .section-kicker { display: block; margin-bottom: 9px; color: #7d8b81; text-transform: uppercase; letter-spacing: 1.8px; font-size: 9px; font-weight: 700; }
+    h2 { margin: 0; font: 500 clamp(29px, 3.2vw, 39px)/1.18 var(--serif); letter-spacing: -.7px; }
+    .section-sub { margin: 9px 0 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .text-link { display: inline-flex; align-items: center; gap: 7px; color: var(--green); font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .text-link svg { width: 14px; height: 14px; transition: transform .2s; }
+    .text-link:hover svg { transform: translateX(3px); }
+
+    .destination-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 17px; }
+    .destination-card { min-width: 0; position: relative; height: 270px; overflow: hidden; border-radius: 12px; background: #c9d4c9; }
+    .destination-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .55s; }
+    .destination-card:hover img { transform: scale(1.055); }
+    .destination-card::after { content: ""; position: absolute; inset: 30% 0 0; background: linear-gradient(0deg, rgba(13,31,25,.72), transparent); }
+    .destination-copy { position: absolute; z-index: 1; right: 17px; bottom: 17px; left: 17px; color: #fff; }
+    .destination-copy .small-label { color: rgba(255,255,255,.79); text-transform: uppercase; letter-spacing: 1.3px; font-size: 8px; font-weight: 700; }
+    .destination-copy h3 { margin: 5px 0 3px; font: 500 23px var(--serif); }
+    .destination-copy p { margin: 0; color: rgba(255,255,255,.82); font-size: 10px; }
+    .trip-count { position: absolute; z-index: 2; top: 13px; left: 13px; padding: 7px 10px; background: rgba(255,255,255,.9); border-radius: 999px; color: var(--ink); font-size: 9px; font-weight: 700; }
+
+    .companion-section { padding: 58px 0 64px; background: #edf0e9; }
+    .filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 21px; }
+    .filter-chip { min-height: 31px; padding: 0 13px; background: transparent; border: 1px solid #d5dcd3; border-radius: 999px; color: #68756c; font-size: 10px; font-weight: 600; transition: all .2s; }
+    .filter-chip:hover, .filter-chip.active { color: #fff; border-color: var(--green); background: var(--green); }
+    .traveler-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .traveler-card { display: grid; grid-template-columns: 78px 1fr; gap: 14px; min-width: 0; padding: 16px; background: var(--white); border: 1px solid rgba(29,48,40,.05); border-radius: 12px; transition: transform .2s, box-shadow .2s; }
+    .traveler-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(30,48,39,.07); }
+    .traveler-photo { width: 78px; height: 93px; border-radius: 8px; object-fit: cover; }
+    .traveler-info { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
+    .traveler-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 5px; width: 100%; }
+    .traveler-name { margin: 1px 0 3px; font-size: 12px; font-weight: 700; }
+    .traveler-age { color: #828d84; font-size: 9px; }
+    .online-dot { width: 7px; height: 7px; flex: none; margin-top: 4px; background: #8eb873; border-radius: 50%; box-shadow: 0 0 0 3px #edf5e8; }
+    .traveler-location { margin: 6px 0 8px; color: #718078; font-size: 9px; }
+    .traveler-meta { display: flex; flex-wrap: wrap; gap: 5px; }
+    .mini-tag { padding: 5px 7px; color: #527060; background: #edf3ee; border-radius: 4px; font-size: 8px; font-weight: 600; }
+    .traveler-bottom { width: 100%; margin-top: auto; padding-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .date-label { color: #7c8980; font-size: 8px; }
+    .connect-button { padding: 6px 11px; color: var(--green); background: transparent; border: 1px solid #cfd9cf; border-radius: 999px; font-size: 9px; font-weight: 700; white-space: nowrap; transition: all .2s; }
+    .connect-button:hover, .connect-button.connected { color: white; background: var(--green); border-color: var(--green); }
+    .empty-state { display: none; grid-column: 1 / -1; padding: 28px; color: var(--muted); background: var(--white); border-radius: 12px; text-align: center; font-size: 12px; }
+
+    .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; }
+    .guide-card { overflow: hidden; background: var(--white); border: 1px solid var(--line); border-radius: 11px; }
+    .guide-image-wrap { height: 190px; position: relative; overflow: hidden; background: #e2e8de; }
+    .guide-image { width: 100%; height: 100%; object-fit: cover; transition: transform .45s; }
+    .guide-card:hover .guide-image { transform: scale(1.04); }
+    .guide-badge { position: absolute; top: 12px; left: 12px; padding: 7px 9px; color: var(--green); background: rgba(255,254,250,.94); border-radius: 999px; font-size: 8px; font-weight: 700; }
+    .guide-details { padding: 15px 16px 16px; }
+    .guide-location { color: #7c8980; text-transform: uppercase; letter-spacing: 1px; font-size: 8px; font-weight: 700; }
+    .guide-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-top: 7px; }
+    .guide-title-row h3 { margin: 0; font: 500 19px var(--serif); }
+    .rating { display: inline-flex; align-items: center; gap: 4px; color: #45554a; font-size: 9px; font-weight: 700; white-space: nowrap; }
+    .rating span { color: #c28c39; font-size: 12px; }
+    .guide-description { min-height: 34px; margin: 8px 0 13px; color: #738078; font-size: 10px; line-height: 1.65; }
+    .guide-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .guide-price { font-size: 10px; font-weight: 700; }
+    .guide-price small { color: #839087; font-size: 9px; font-weight: 400; }
+    .guide-button { min-height: 32px; padding: 0 13px; font-size: 9px; }
+
+    .closing-banner { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 30px; min-height: 220px; margin: 25px 0 65px; padding: 42px 55px; color: #fff; background: var(--green); border-radius: 13px; }
+    .closing-banner::after { content: ""; position: absolute; top: -128px; right: 13%; width: 340px; height: 340px; border: 1px solid rgba(255,255,255,.1); border-radius: 50%; box-shadow: 0 0 0 32px rgba(255,255,255,.035), 0 0 0 66px rgba(255,255,255,.025); }
+    .closing-copy { position: relative; z-index: 1; max-width: 500px; }
+    .closing-copy .section-kicker { color: #bdd19d; }
+    .closing-copy h2 { max-width: 450px; font-size: 34px; }
+    .closing-copy p { color: rgba(255,255,255,.68); font-size: 11px; line-height: 1.7; }
+    .closing-banner .button { position: relative; z-index: 1; flex: none; }
+    footer { border-top: 1px solid var(--line); }
+    .footer-inner { min-height: 76px; display: flex; justify-content: space-between; align-items: center; gap: 20px; color: #748078; font-size: 9px; }
+    .footer-links { display: flex; gap: 18px; }
+    .footer-links a:hover { color: var(--green); }
+
+    .toast { position: fixed; z-index: 50; right: 22px; bottom: 22px; max-width: calc(100% - 44px); padding: 13px 18px; color: white; background: var(--green); border-radius: 9px; box-shadow: var(--shadow); font-size: 12px; opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .25s, transform .25s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .modal-backdrop { position: fixed; z-index: 40; inset: 0; display: none; place-items: center; padding: 20px; background: rgba(19,34,27,.56); backdrop-filter: blur(4px); }
+    .modal-backdrop.open { display: grid; }
+    .modal { position: relative; width: min(430px, 100%); padding: 29px; background: var(--white); border-radius: 14px; box-shadow: 0 25px 80px rgba(0,0,0,.2); }
+    .modal-close { position: absolute; top: 14px; right: 14px; width: 31px; height: 31px; color: #66746b; background: #f0f1eb; border: 0; border-radius: 50%; font-size: 18px; }
+    .modal .section-kicker { margin-top: 10px; }
+    .modal h2 { padding-right: 15px; font-size: 29px; }
+    .modal p { color: #748078; font-size: 12px; line-height: 1.7; }
+    .modal-form { display: grid; gap: 11px; margin-top: 19px; }
+    .modal-form label { display: grid; gap: 6px; color: #637168; font-size: 10px; font-weight: 700; }
+    .modal-form input, .modal-form select { min-height: 42px; padding: 0 11px; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 7px; outline-color: #9ab29f; font-size: 12px; }
+    .modal-form .button { margin-top: 5px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    @media (max-width: 900px) {
+      .wrap { width: min(100% - 40px, 720px); }
+      .nav-links { gap: 19px; }
+      .nav-links a { font-size: 11px; }
+      .hero-frame { min-height: 455px; }
+      .hero-content { padding: 65px 0 115px 48px; }
+      .search-panel { width: calc(100% - 40px); grid-template-columns: 1.2fr 1fr 1fr auto; }
+      .search-field { padding: 8px 12px; }
+      .search-submit { padding: 0 16px; }
+      .destination-grid { grid-template-columns: repeat(2, 1fr); }
+      .destination-card { height: 245px; }
+      .traveler-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .wrap { width: calc(100% - 36px); }
+      .nav { min-height: 65px; }
+      .brand { font-size: 17px; }
+      .nav-actions { gap: 10px; }
+      .nav-actions .login { display: none; }
+      .nav-actions .button { min-height: 37px; padding: 0 13px; font-size: 10px; }
+      .mobile-toggle { display: block; width: 34px; height: 34px; padding: 7px; }
+      .mobile-toggle svg { width: 20px; height: 20px; }
+      .nav-links { position: absolute; top: 64px; right: 0; left: 0; display: none; flex-direction: column; align-items: stretch; gap: 0; margin: 0; padding: 8px 18px 14px; background: var(--paper); border-bottom: 1px solid var(--line); }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 12px 4px; font-size: 13px; }
+      .hero { padding: 15px 0 35px; }
+      .hero-frame { min-height: 472px; border-radius: 12px; background-position: 55% center; }
+      .hero-frame::before { background: linear-gradient(90deg, rgba(20,39,32,.65), rgba(20,39,32,.13)), linear-gradient(0deg, rgba(20,39,32,.3), transparent 66%); }
+      .hero-content { width: 95%; padding: 57px 22px 110px; }
+      .hero h1 { max-width: 400px; margin-top: 17px; font-size: clamp(42px, 12vw, 57px); }
+      .hero-copy { max-width: 310px; font-size: 12px; }
+      .hero-cta { margin-top: 21px; }
+      .hero-note { right: 12px; bottom: 13px; font-size: 9px; }
+      .search-panel { width: calc(100% - 22px); grid-template-columns: 1fr 1fr; gap: 0; margin-top: -28px; padding: 8px; }
+      .search-field { min-height: 58px; padding: 8px 9px; }
+      .search-field:nth-child(2) { border-right: 0; }
+      .search-field:nth-child(3) { border-right: 1px solid var(--line); }
+      .field-icon svg { width: 16px; height: 16px; }
+      .field-label { font-size: 8px; }
+      .search-field input, .search-field select { font-size: 10px; }
+      .search-submit { grid-column: 1 / -1; min-height: 41px; margin-top: 5px; }
+      .section { padding: 40px 0; }
+      .section-head { align-items: flex-start; margin-bottom: 19px; }
+      h2 { font-size: 30px; }
+      .section-sub { max-width: 290px; font-size: 10px; }
+      .section-head > .text-link { margin-top: 31px; font-size: 9px; }
+      .destination-grid { gap: 10px; }
+      .destination-card { height: 205px; border-radius: 9px; }
+      .destination-copy { right: 10px; bottom: 12px; left: 11px; }
+      .destination-copy h3 { font-size: 19px; }
+      .destination-copy p { font-size: 8px; }
+      .trip-count { top: 8px; left: 8px; padding: 6px 8px; font-size: 8px; }
+      .companion-section { padding: 41px 0; }
+      .traveler-grid { grid-template-columns: 1fr; gap: 9px; }
+      .traveler-card { grid-template-columns: 70px 1fr; padding: 12px; }
+      .traveler-photo { width: 70px; height: 84px; }
+      .guide-grid { grid-template-columns: 1fr; gap: 12px; }
+      .guide-card { display: grid; grid-template-columns: 38% 1fr; min-height: 162px; }
+      .guide-image-wrap { height: 100%; min-height: 162px; }
+      .guide-details { padding: 13px 12px; }
+      .guide-title-row { display: block; }
+      .guide-title-row h3 { font-size: 17px; }
+      .guide-title-row .rating { margin-top: 4px; }
+      .guide-description { min-height: 0; margin: 6px 0 9px; font-size: 9px; }
+      .guide-footer { padding-top: 8px; }
+      .guide-price { font-size: 9px; }
+      .guide-button { min-height: 29px; padding: 0 10px; font-size: 8px; }
+      .closing-banner { align-items: flex-start; flex-direction: column; gap: 18px; min-height: 0; margin: 10px 0 40px; padding: 30px 25px; }
+      .closing-copy h2 { font-size: 29px; }
+      .closing-banner::after { right: -200px; }
+      .footer-inner { align-items: flex-start; flex-direction: column; justify-content: center; gap: 10px; padding: 18px 0; }
+      .footer-links { gap: 13px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav wrap" aria-label="Main navigation">
+      <a class="brand" href="#" aria-label="Elsewhere home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M5 22.5 12.2 8l4.3 8.3 3.1-5.2L27 23.5H6.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 23 5.2-6.1 3.1 3.2 2.8-3.1 5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        elsewhere<span style="color:#819284">.</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="#destinations">Explore trips</a>
+        <a href="#travelers">Find your people</a>
+        <a href="#guides">Local guides</a>
+      </div>
+      <div class="nav-actions">
+        <a class="login" href="#join">Log in</a>
+        <button class="button button-dark" data-modal="join">Join the community <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="mobile-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero" aria-labelledby="heroTitle">
+        <div class="hero-frame">
+          <div class="hero-content">
+            <span class="eyebrow"><span class="dot"></span> A different kind of travel club</span>
+            <h1 id="heroTitle">The world feels<br>closer <em>together.</em></h1>
+            <p class="hero-copy">Good trips are better shared. Find your next somewhere, meet your kind of people, and let locals show you the rest.</p>
+            <a class="button button-lime hero-cta" href="#destinations">Find your somewhere <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+          <div class="hero-note">
+            <span class="avatar-stack" aria-hidden="true">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=75" alt="">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=75" alt="">
+              <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=80&q=75" alt="">
+            </span>
+            <span><strong>12,000+</strong> solo travelers found their people</span>
+          </div>
+        </div>
+
+        <form class="search-panel" id="tripSearch">
+          <label class="search-field">
+            <span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M20 10.1c0 5.2-8 11-8 11s-8-5.8-8-11a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="2.6" stroke="currentColor" stroke-width="1.6"/></svg></span>
+            <span style="min-width:0;flex:1"><span class="field-label">Where to?</span><input id="destinationInput" type="search" placeholder="Try Lisbon, Bali, anywhere..." aria-label="Destination"></span>
+          </label>
+          <label class="search-field">
+            <span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5.5" width="17" height="15" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 3.5v4m9-4v4M4 10h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+            <span style="min-width:0;flex:1"><span class="field-label">When</span><select id="whenInput" aria-label="When are you traveling?"><option value="">Anytime</option><option>March – May</option><option>June – August</option><option>September – November</option><option>December – February</option></select></span>
+          </label>
+          <label class="search-field">
+            <span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 20v-1.6a5.5 5.5 0 0 1 11 0V20m2.2-15a3.2 3.2 0 0 1 0 6.2m1.3 3.1a5.4 5.4 0 0 1 2.5 4.6V20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+            <span style="min-width:0;flex:1"><span class="field-label">Travel style</span><select id="styleInput" aria-label="Travel style"><option value="">Open to anything</option><option>Slow &amp; mindful</option><option>Outdoors &amp; active</option><option>Food &amp; culture</option><option>Beach &amp; sunshine</option></select></span>
+          </label>
+          <button class="button button-dark search-submit" type="submit"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.7" cy="8.7" r="5.7" stroke="currentColor" stroke-width="1.7"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Find a trip</button>
+        </form>
+      </section>
+
+      <section class="section" id="destinations">
+        <div class="section-head">
+          <div><span class="section-kicker">A little inspiration</span><h2>Somewhere good starts here.</h2><p class="section-sub">Big views, long lunches, and the kind of stories that stay with you.</p></div>
+          <a class="text-link" href="#guides">Explore all trips <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+        <div class="destination-grid" id="destinationGrid">
+          <a class="destination-card" data-destination="italy" href="#guides">
+            <span class="trip-count">8 small-group trips</span>
+            <img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=700&q=80" alt="Colorful villages of Cinque Terre on the Italian coast" loading="lazy">
+            <div class="destination-copy"><span class="small-label">Italy · Coast &amp; culture</span><h3>Cinque Terre</h3><p>7 days · from $1,240</p></div>
+          </a>
+          <a class="destination-card" data-destination="bali indonesia" href="#guides">
+            <span class="trip-count">6 small-group trips</span>
+            <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=700&q=80" alt="Temple and tropical landscape in Bali, Indonesia" loading="lazy">
+            <div class="destination-copy"><span class="small-label">Indonesia · Slow &amp; soulful</span><h3>Ubud, Bali</h3><p>10 days · from $980</p></div>
+          </a>
+          <a class="destination-card" data-destination="portugal lisbon" href="#guides">
+            <span class="trip-count">12 small-group trips</span>
+            <img src="https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=700&q=80" alt="Golden evening light over Lisbon, Portugal" loading="lazy">
+            <div class="destination-copy"><span class="small-label">Portugal · City &amp; coast</span><h3>Lisbon</h3><p>5 days · from $760</p></div>
+          </a>
+          <a class="destination-card" data-destination="japan kyoto" href="#guides">
+            <span class="trip-count">5 small-group trips</span>
+            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=700&q=80" alt="Traditional street and pagoda in Kyoto, Japan" loading="lazy">
+            <div class="destination-copy"><span class="small-label">Japan · Tradition &amp; taste</span><h3>Kyoto</h3><p>8 days · from $1,580</p></div>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <section class="companion-section" id="travelers">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="section-kicker">Good company, no pressure</span><h2>Your next travel buddy?</h2><p class="section-sub">Meet solo travelers heading somewhere you love. Say hello, swap plans, see where it goes.</p></div>
+          <a class="text-link" href="#join">Meet everyone <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter travelers by destination">
+          <button class="filter-chip active" data-filter="all">Everyone</button>
+          <button class="filter-chip" data-filter="japan">Japan</button>
+          <button class="filter-chip" data-filter="portugal">Portugal</button>
+          <button class="filter-chip" data-filter="bali">Bali</button>
+          <button class="filter-chip" data-filter="italy">Italy</button>
+        </div>
+        <div class="traveler-grid" id="travelerGrid">
+          <article class="traveler-card" data-trip="japan">
+            <img class="traveler-photo" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=220&q=80" alt="Maya smiling" loading="lazy">
+            <div class="traveler-info"><div class="traveler-top"><div><h3 class="traveler-name">Maya R. <span class="traveler-age">· 28</span></h3><span class="traveler-location">Brooklyn, New York</span></div><span class="online-dot" aria-label="Recently active"></span></div><div class="traveler-meta"><span class="mini-tag">Kyoto, Japan</span><span class="mini-tag">Food &amp; culture</span></div><div class="traveler-bottom"><span class="date-label">Going Oct 12 – 20</span><button class="connect-button" data-person="Maya">Say hello</button></div></div>
+          </article>
+          <article class="traveler-card" data-trip="portugal">
+            <img class="traveler-photo" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=180&h=220&q=80" alt="Elliot outdoors" loading="lazy">
+            <div class="traveler-info"><div class="traveler-top"><div><h3 class="traveler-name">Elliot K. <span class="traveler-age">· 31</span></h3><span class="traveler-location">Melbourne, Australia</span></div><span class="online-dot" aria-label="Recently active"></span></div><div class="traveler-meta"><span class="mini-tag">Lisbon, Portugal</span><span class="mini-tag">Slow travel</span></div><div class="traveler-bottom"><span class="date-label">Going Oct 18 – 26</span><button class="connect-button" data-person="Elliot">Say hello</button></div></div>
+          </article>
+          <article class="traveler-card" data-trip="bali">
+            <img class="traveler-photo" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=180&h=220&q=80" alt="Priya smiling" loading="lazy">
+            <div class="traveler-info"><div class="traveler-top"><div><h3 class="traveler-name">Priya S. <span class="traveler-age">· 26</span></h3><span class="traveler-location">London, United Kingdom</span></div><span class="online-dot" aria-label="Recently active"></span></div><div class="traveler-meta"><span class="mini-tag">Ubud, Bali</span><span class="mini-tag">Outdoors</span></div><div class="traveler-bottom"><span class="date-label">Going Nov 2 – 12</span><button class="connect-button" data-person="Priya">Say hello</button></div></div>
+          </article>
+          <article class="traveler-card" data-trip="italy">
+            <img class="traveler-photo" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=180&h=220&q=80" alt="Daniel smiling" loading="lazy">
+            <div class="traveler-info"><div class="traveler-top"><div><h3 class="traveler-name">Daniel M. <span class="traveler-age">· 34</span></h3><span class="traveler-location">Toronto, Canada</span></div><span class="online-dot" aria-label="Recently active"></span></div><div class="traveler-meta"><span class="mini-tag">Cinque Terre</span><span class="mini-tag">Hiking</span></div><div class="traveler-bottom"><span class="date-label">Going Sep 24 – Oct 1</span><button class="connect-button" data-person="Daniel">Say hello</button></div></div>
+          </article>
+          <article class="traveler-card" data-trip="portugal">
+            <img class="traveler-photo" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=220&q=80&sat=-35" alt="Sofia smiling" loading="lazy">
+            <div class="traveler-info"><div class="traveler-top"><div><h3 class="traveler-name">Sofia L. <span class="traveler-age">· 29</span></h3><span class="traveler-location">Copenhagen, Denmark</span></div><span class="online-dot" aria-label="Recently active"></span></div><div class="traveler-meta"><span class="mini-tag">Porto, Portugal</span><span class="mini-tag">Photography</span></div><div class="traveler-bottom"><span class="date-label">Going Oct 20 – 27</span><button class="connect-button" data-person="Sofia">Say hello</button></div></div>
+          </article>
+          <article class="traveler-card" data-trip="japan">
+            <img class="traveler-photo" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=180&h=220&q=80&sat=-25" alt="Alex smiling" loading="lazy">
+            <div class="traveler-info"><div class="traveler-top"><div><h3 class="traveler-name">Alex T. <span class="traveler-age">· 30</span></h3><span class="traveler-location">Singapore</span></div><span class="online-dot" aria-label="Recently active"></span></div><div class="traveler-meta"><span class="mini-tag">Tokyo &amp; Kyoto</span><span class="mini-tag">Street food</span></div><div class="traveler-bottom"><span class="date-label">Going Nov 5 – 16</span><button class="connect-button" data-person="Alex">Say hello</button></div></div>
+          </article>
+          <div class="empty-state" id="emptyTravelers">No travelers found for that destination just yet. Try another one.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <section class="section" id="guides">
+        <div class="section-head">
+          <div><span class="section-kicker">Local eyes, lovely days</span><h2>Meet the ones who know.</h2><p class="section-sub">Thoughtful local guides who turn a good day out into your favorite travel story.</p></div>
+          <a class="text-link" href="#guides">See all guides <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+        <div class="guide-grid">
+          <article class="guide-card">
+            <div class="guide-image-wrap"><img class="guide-image" src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=700&q=80" alt="Coastal path through villages in Cinque Terre" loading="lazy"><span class="guide-badge">Local favorite</span></div>
+            <div class="guide-details"><span class="guide-location">Cinque Terre, Italy</span><div class="guide-title-row"><h3>Hidden paths &amp; pesto</h3><span class="rating"><span>★</span> 4.98 (84)</span></div><p class="guide-description">A slow coastal walk, family-run trattoria, and the best pesto you’ll ever taste.</p><div class="guide-footer"><span class="guide-price">$68 <small>/ person · 4 hours</small></span><button class="button button-dark guide-button" data-modal="guide" data-name="Hidden paths & pesto">Meet your guide</button></div></div>
+          </article>
+          <article class="guide-card">
+            <div class="guide-image-wrap"><img class="guide-image" src="https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=700&q=80" alt="Lisbon's colorful neighborhood streets" loading="lazy"><span class="guide-badge">Small group · max 6</span></div>
+            <div class="guide-details"><span class="guide-location">Lisbon, Portugal</span><div class="guide-title-row"><h3>Lisbon, after hours</h3><span class="rating"><span>★</span> 4.96 (126)</span></div><p class="guide-description">Local wine, tucked-away fado, and the little streets the guidebooks miss.</p><div class="guide-footer"><span class="guide-price">$52 <small>/ person · 3 hours</small></span><button class="button button-dark guide-button" data-modal="guide" data-name="Lisbon, after hours">Meet your guide</button></div></div>
+          </article>
+          <article class="guide-card">
+            <div class="guide-image-wrap"><img class="guide-image" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=700&q=80" alt="Lantern-lit street in old Kyoto" loading="lazy"><span class="guide-badge">Cultural experience</span></div>
+            <div class="guide-details"><span class="guide-location">Kyoto, Japan</span><div class="guide-title-row"><h3>Old Kyoto, unhurried</h3><span class="rating"><span>★</span> 5.0 (63)</span></div><p class="guide-description">A neighborhood walk with a local storyteller, tea house stop, and no rush.</p><div class="guide-footer"><span class="guide-price">$74 <small>/ person · 3.5 hours</small></span><button class="button button-dark guide-button" data-modal="guide" data-name="Old Kyoto, unhurried">Meet your guide</button></div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="closing-banner" id="join">
+        <div class="closing-copy"><span class="section-kicker">Your next chapter is out there</span><h2>Go alone. Feel together.</h2><p>One good conversation can change the whole trip. Find yours on Elsewhere.</p></div>
+        <button class="button button-lime" data-modal="join">Find your people <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <a class="brand" href="#" aria-label="Elsewhere home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M5 22.5 12.2 8l4.3 8.3 3.1-5.2L27 23.5H6.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 23 5.2-6.1 3.1 3.2 2.8-3.1 5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>elsewhere<span style="color:#819284">.</span></a>
+      <span>Made for the miles between here and somewhere. © Elsewhere 2025</span>
+      <div class="footer-links"><a href="#destinations">Explore</a><a href="#travelers">Community</a><a href="#guides">For guides</a></div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <button class="modal-close" id="modalClose" aria-label="Close dialog">&times;</button>
+      <span class="section-kicker" id="modalKicker">A little more together</span>
+      <h2 id="modalTitle">Your next trip starts here.</h2>
+      <p id="modalDescription">Join a thoughtful community of solo travelers and find your kind of adventure.</p>
+      <form class="modal-form" id="modalForm">
+        <label>Your name<input name="name" type="text" placeholder="How should we call you?" required></label>
+        <label>Email address<input name="email" type="email" placeholder="you@example.com" required></label>
+        <button class="button button-dark" type="submit">Count me in <span aria-hidden="true">→</span></button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const toast = document.getElementById("toast");
+    const backdrop = document.getElementById("modalBackdrop");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDescription = document.getElementById("modalDescription");
+    const modalKicker = document.getElementById("modalKicker");
+    const modalForm = document.getElementById("modalForm");
+    let toastTimer;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    function openModal(kind, name) {
+      if (kind === "guide") {
+        modalKicker.textContent = "A day to remember";
+        modalTitle.textContent = name || "Meet your local guide.";
+        modalDescription.textContent = "Leave your details and we’ll help you plan a lovely day with your local guide.";
+        modalForm.querySelector('button[type="submit"]').innerHTML = 'Ask about this experience <span aria-hidden="true">→</span>';
+      } else {
+        modalKicker.textContent = "A little more together";
+        modalTitle.textContent = "Your next trip starts here.";
+        modalDescription.textContent = "Join a thoughtful community of solo travelers and find your kind of adventure.";
+        modalForm.querySelector('button[type="submit"]').innerHTML = 'Count me in <span aria-hidden="true">→</span>';
+      }
+      backdrop.classList.add("open");
+      document.body.style.overflow = "hidden";
+      modalForm.querySelector('input[name="name"]').focus();
+    }
+
+    function closeModal() {
+      backdrop.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    document.querySelectorAll("[data-modal]").forEach((button) => {
+      button.addEventListener("click", () => openModal(button.dataset.modal, button.dataset.name));
+    });
+    document.getElementById("modalClose").addEventListener("click", closeModal);
+    backdrop.addEventListener("click", (event) => {
+      if (event.target === backdrop) closeModal();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeModal();
+    });
+
+    modalForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(modalForm);
+      const name = formData.get("name");
+      closeModal();
+      modalForm.reset();
+      showToast(`Thanks, ${name}! We’ll be in touch soon.`);
+    });
+
+    document.getElementById("tripSearch").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const query = document.getElementById("destinationInput").value.trim();
+      if (!query) {
+        document.getElementById("destinationInput").focus();
+        showToast("Add a destination to find your next trip.");
+        return;
+      }
+      const cards = [...document.querySelectorAll(".destination-card")];
+      const normalizedQuery = query.toLowerCase();
+      let matches = 0;
+      cards.forEach((card) => {
+        const found = card.dataset.destination.includes(normalizedQuery) ||
+          card.querySelector("h3").textContent.toLowerCase().includes(normalizedQuery) ||
+          card.querySelector(".small-label").textContent.toLowerCase().includes(normalizedQuery);
+        card.hidden = !found;
+        if (found) matches++;
+      });
+      document.querySelector(".destination-grid").scrollIntoView({ behavior: "smooth", block: "center" });
+      showToast(matches ? `${matches} ${matches === 1 ? "trip" : "trips"} found for ${query}.` : `No trips found for ${query} yet. Try Lisbon, Bali, Italy, or Japan.`);
+    });
+
+    document.querySelectorAll(".filter-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".filter-chip").forEach((item) => item.classList.remove("active"));
+        chip.classList.add("active");
+        const filter = chip.dataset.filter;
+        let visible = 0;
+        document.querySelectorAll(".traveler-card").forEach((card) => {
+          const matches = filter === "all" || card.dataset.trip === filter;
+          card.hidden = !matches;
+          if (matches) visible++;
+        });
+        document.getElementById("emptyTravelers").style.display = visible ? "none" : "block";
+      });
+    });
+
+    document.querySelectorAll(".connect-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (button.classList.contains("connected")) {
+          button.classList.remove("connected");
+          button.textContent = "Say hello";
+          showToast(`You can say hello to ${button.dataset.person} anytime.`);
+        } else {
+          button.classList.add("connected");
+          button.textContent = "Hello sent ✓";
+          showToast(`A hello is on its way to ${button.dataset.person}!`);
+        }
+      });
+    });
+
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+    menuToggle.addEventListener("click", () => {
+      const isOpen = navLinks.classList.toggle("open");
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+      menuToggle.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
+    });
+    navLinks.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("open");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Open navigation menu");
+      });
+    });
+  </script>
+</body>
+</html>
